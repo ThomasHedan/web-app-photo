@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Galerie partagée du Mariage de Marine et Mael">
+  <meta name="theme-color" content="#faf8f5">
+  <title>Mariage de Marine et Mael – La galerie</title>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <!-- ===== En-tête ===== -->
+  <header class="site-header">
+    <h1 class="site-title">
+      Mariage de Marine <span class="et">&amp;</span> Mael
+    </h1>
+    <p class="site-subtitle">La galerie partagée</p>
+    <div class="divider" aria-hidden="true"></div>
+  </header>
+
+  <!-- ===== Contenu principal ===== -->
+  <main class="gallery-main">
+
+    <!-- Compteur -->
+    <p class="gallery-meta" id="gallery-meta" aria-live="polite">
+      Chargement…
+    </p>
+
+    <!-- État de chargement -->
+    <div class="gallery-loading" id="gallery-loading" aria-live="polite">
+      <span aria-hidden="true">✨</span> Chargement des photos…
+    </div>
+
+    <!-- Grille de photos -->
+    <div
+      class="photo-grid"
+      id="photo-grid"
+      role="list"
+      aria-label="Galerie de photos du mariage"
+    ></div>
+
+  </main>
+
+  <!-- ===== Bouton flottant ===== -->
+  <a
+    href="upload.html"
+    class="fab"
+    aria-label="Ajouter une photo"
+    title="Ajouter une photo"
+  >
+    <span aria-hidden="true">📷</span> Ajouter
+  </a>
+
+  <!-- ===== Lightbox ===== -->
+  <div
+    class="lightbox"
+    id="lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Visionneuse de photos"
+  >
+    <!-- Fond cliquable pour fermer -->
+    <div
+      style="position:absolute;inset:0;"
+      onclick="closeLightbox()"
+      aria-hidden="true"
+    ></div>
+
+    <!-- Bouton fermer -->
+    <button
+      class="lightbox-close"
+      onclick="closeLightbox()"
+      aria-label="Fermer"
+    >✕</button>
+
+    <!-- Navigation précédent -->
+    <button
+      class="lightbox-nav lightbox-prev"
+      onclick="prevPhoto()"
+      aria-label="Photo précédente"
+    >&#8249;</button>
+
+    <!-- Image -->
+    <div class="lightbox-img-wrap">
+      <img id="lightbox-img" src="" alt="Photo du mariage en grand" loading="lazy">
+    </div>
+
+    <!-- Navigation suivant -->
+    <button
+      class="lightbox-nav lightbox-next"
+      onclick="nextPhoto()"
+      aria-label="Photo suivante"
+    >&#8250;</button>
+
+    <!-- Compteur -->
+    <div class="lightbox-counter" id="lightbox-counter" aria-live="polite"></div>
+  </div>
+
+  <!-- ===== Conteneur de toasts ===== -->
+  <div class="toast-container" id="toast-container" role="status" aria-live="polite"></div>
+
+  <script src="assets/gallery.js"></script>
+</body>
+</html>

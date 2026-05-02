@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Partagez vos photos du Mariage de Marine et Mael">
+  <meta name="theme-color" content="#faf8f5">
+  <title>Mariage de Marine et Mael – Partagez vos photos</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <!-- browser-image-compression via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+</head>
+<body>
+
+  <!-- ===== Modal de bienvenue ===== -->
+  <div class="modal-overlay" id="welcome-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="display:none;">
+    <div class="modal">
+      <div class="modal-deco" aria-hidden="true">💍</div>
+      <h2 class="modal-title" id="modal-title">Bienvenue !</h2>
+      <p class="modal-text">
+        Merci d'être là pour célébrer notre union&nbsp;! Cette page vous permet de partager
+        toutes les photos que vous prenez pendant la soirée. Vos photos seront ajoutées à une
+        galerie commune que tous les invités pourront consulter. C'est notre façon de revivre
+        ensemble cette journée à travers vos regards. Bon shooting&nbsp;! 💕
+        <span class="modal-signature">— Marine &amp; Mael</span>
+      </p>
+      <button class="btn btn-primary" onclick="closeWelcomeModal()" autofocus>
+        C'est parti&nbsp;!
+      </button>
+    </div>
+  </div>
+
+  <!-- ===== En-tête ===== -->
+  <header class="site-header">
+    <h1 class="site-title">
+      Mariage de Marine <span class="et">&amp;</span> Mael
+    </h1>
+    <p class="site-subtitle">Partagez vos plus beaux moments 📸</p>
+    <div class="divider" aria-hidden="true"></div>
+  </header>
+
+  <!-- ===== Contenu principal ===== -->
+  <main class="upload-main">
+
+    <!-- Zone de dépôt -->
+    <div
+      class="drop-zone"
+      id="drop-zone"
+      role="button"
+      tabindex="0"
+      aria-label="Zone d'upload — cliquez ou déposez vos photos ici"
+    >
+      <div class="drop-icon" aria-hidden="true">📷</div>
+      <p class="drop-title">Déposez vos photos ici</p>
+      <p class="drop-subtitle">ou cliquez pour sélectionner vos fichiers</p>
+      <input
+        type="file"
+        id="file-input"
+        multiple
+        accept="image/*"
+        capture="environment"
+        aria-label="Sélectionner des photos"
+      >
+    </div>
+
+    <!-- Bouton d'envoi -->
+    <div class="upload-action">
+      <button class="btn btn-primary" id="upload-btn" onclick="uploadAll()" aria-label="Envoyer les photos sélectionnées">
+        <span aria-hidden="true">📤</span> Partager les photos
+      </button>
+    </div>
+
+    <!-- Grille des aperçus -->
+    <div class="previews-grid" id="previews" aria-live="polite" aria-label="Photos sélectionnées"></div>
+
+  </main>
+
+  <!-- ===== Pied de page ===== -->
+  <footer class="page-footer">
+    <span class="heartbeat" aria-hidden="true">♥</span>
+    &nbsp;<a href="gallery.html">Voir la galerie →</a>
+  </footer>
+
+  <!-- ===== Conteneur de toasts ===== -->
+  <div class="toast-container" id="toast-container" role="status" aria-live="polite"></div>
+
+  <script src="assets/upload.js"></script>
+</body>
+</html>
