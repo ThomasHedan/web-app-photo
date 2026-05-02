@@ -4,5 +4,13 @@
     { "source": "/upload.html",  "destination": "/public/upload.html" },
     { "source": "/gallery.html", "destination": "/public/gallery.html" },
     { "source": "/assets/:path*","destination": "/public/assets/:path*" }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    }
   ]
 }
