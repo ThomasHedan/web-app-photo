@@ -23,7 +23,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   const result = await getS3().send(new ListObjectsV2Command({
     Bucket:            BUCKET_NAME,
-    MaxKeys:           500,
+    MaxKeys:           75,
     ContinuationToken: cursor,
   }));
 
