@@ -3,7 +3,6 @@
    ================================================ */
 const API_BASE = '/api';
 
-/* ---- État global ---- */
 let selectedFiles = [];
 
 /* ================================================
@@ -20,7 +19,6 @@ function closeWelcomeModal() {
   document.getElementById('welcome-modal').style.display = 'none';
 }
 
-/* Fermer avec Échap */
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     const modal = document.getElementById('welcome-modal');
@@ -29,40 +27,36 @@ document.addEventListener('keydown', (e) => {
 });
 
 /* ================================================
-   Drag & Drop
+   Inputs fichiers (camera + galerie)
    ================================================ */
-const dropZone = document.getElementById('drop-zone');
-const fileInput = document.getElementById('file-input');
+const cameraInput  = document.getElementById('camera-input');
+const galleryInput = document.getElementById('gallery-input');
 
-dropZone.addEventListener('dragover', (e) => {
-  e.preventDefault();
-  dropZone.classList.add('drag-over');
+cameraInput.addEventListener('change', () => {
+  handleFiles(Array.from(cameraInput.files));
+  cameraInput.value = '';
 });
 
-dropZone.addEventListener('dragleave', (e) => {
-  if (!dropZone.contains(e.relatedTarget)) {
-    dropZone.classList.remove('drag-over');
+galleryInput.addEventListener('change', () => {
+  handleFiles(Array.from(galleryInput.files));
+  galleryInput.value = '';
+});
+
+/* ================================================
+   Sticky bar
+   ================================================ */
+function updateStickyBar() {
+  const bar   = document.getElementById('sticky-bar');
+  const count = document.getElementById('sticky-count');
+  const n     = selectedFiles.length;
+
+  if (n > 0) {
+    bar.classList.add('visible');
+    count.textContent = `${n} photo${n > 1 ? 's' : ''}`;
+  } else {
+    bar.classList.remove('visible');
   }
-});
-
-dropZone.addEventListener('drop', (e) => {
-  e.preventDefault();
-  dropZone.classList.remove('drag-over');
-  handleFiles(Array.from(e.dataTransfer.files));
-});
-
-/* Clic sur la zone (l'input est positionné par-dessus, donc ce listener est un fallback) */
-dropZone.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter' || e.key === ' ') {
-    e.preventDefault();
-    fileInput.click();
-  }
-});
-
-fileInput.addEventListener('change', () => {
-  handleFiles(Array.from(fileInput.files));
-  fileInput.value = ''; /* Permet de re-sélectionner les mêmes fichiers */
-});
+}
 
 /* ================================================
    Gestion des fichiers sélectionnés
@@ -91,8 +85,7 @@ function handleFiles(files) {
     showToast('Ces photos sont déjà sélectionnées.', 'info');
   }
 
-  document.getElementById('upload-btn').style.display =
-    selectedFiles.length > 0 ? 'inline-flex' : 'none';
+  updateStickyBar();
 }
 
 /* ================================================
@@ -110,10 +103,6 @@ function addPreview(file) {
 
     item.innerHTML = `
       <img src="${e.target.result}" alt="${escapeHtml(file.name)}" loading="lazy">
-      <div class="preview-meta">
-        <span class="preview-name">${escapeHtml(file.name)}</span>
-        <span class="preview-size">${formatSize(file.size)}</span>
-      </div>
       <div class="preview-progress">
         <div class="progress-bar" id="bar-${safeId}"></div>
       </div>
@@ -138,9 +127,7 @@ function removeFile(name, size) {
     `.preview-item[data-name="${CSS.escape(name)}"][data-size="${size}"]`
   );
   if (item) item.remove();
-
-  document.getElementById('upload-btn').style.display =
-    selectedFiles.length > 0 ? 'inline-flex' : 'none';
+  updateStickyBar();
 }
 
 /* ================================================
@@ -151,17 +138,15 @@ async function uploadAll() {
 
   const btn = document.getElementById('upload-btn');
   btn.disabled = true;
-  btn.textContent = 'Envoi en cours…';
+  btn.textContent = 'Envoi…';
 
   let successes = 0;
   let errors = 0;
 
-  /* Upload en séquentiel pour éviter de saturer la connexion mobile */
   for (const file of [...selectedFiles]) {
     try {
       await uploadFile(file);
       successes++;
-      /* Retirer le fichier de la liste une fois envoyé */
       selectedFiles = selectedFiles.filter(
         (f) => !(f.name === file.name && f.size === file.size)
       );
@@ -179,31 +164,30 @@ async function uploadAll() {
 
   if (successes > 0) {
     showToast(
-      `${successes} photo${successes > 1 ? 's' : ''} partagée${successes > 1 ? 's' : ''} avec succès\u00a0! 🎉`,
+      `${successes} photo${successes > 1 ? 's' : ''} partagée${successes > 1 ? 's' : ''} ! 🎉`,
       'success'
     );
   }
   if (errors > 0) {
     showToast(
-      `${errors} photo${errors > 1 ? 's' : ''} n'ont pas pu être envoyée${errors > 1 ? 's' : ''}.`,
+      `${errors} photo${errors > 1 ? 's' : ''} n'ont pas pu être envoyées.`,
       'error'
     );
   }
 
   btn.disabled = false;
-  btn.innerHTML = '<span aria-hidden="true">📤</span> Partager les photos';
-  btn.style.display = selectedFiles.length > 0 ? 'inline-flex' : 'none';
+  btn.textContent = 'Partager ↑';
+  updateStickyBar();
 }
 
 async function uploadFile(file) {
-  const safeId = makeSafeId(file.name + file.size);
+  const safeId   = makeSafeId(file.name + file.size);
   const barEl    = document.getElementById(`bar-${safeId}`);
   const statusEl = document.getElementById(`status-${safeId}`);
 
   const setStatus = (text) => { if (statusEl) statusEl.textContent = text; };
   const setBar    = (pct)  => { if (barEl) barEl.style.width = `${pct}%`; };
 
-  /* Étape 1 — Compression */
   setStatus('Compression…');
   setBar(5);
 
@@ -229,7 +213,6 @@ async function uploadFile(file) {
     throw new Error('Fichier trop volumineux après compression (max 10 Mo)');
   }
 
-  /* Étape 2 — Obtenir l'URL présignée */
   setStatus('Préparation…');
   setBar(32);
 
@@ -252,7 +235,6 @@ async function uploadFile(file) {
 
   const { uploadUrl } = await presignRes.json();
 
-  /* Étape 3 — Upload vers R2 */
   setStatus('Envoi…');
 
   await xhrUpload(uploadUrl, uploadCandidate, contentType, (p) => {
@@ -261,11 +243,10 @@ async function uploadFile(file) {
 
   setBar(100);
   if (barEl) barEl.style.background = '#1e6647';
-  setStatus('✓ Partagée\u00a0!');
+  setStatus('✓ Partagée !');
   if (statusEl) statusEl.style.color = '#1e6647';
 }
 
-/* XHR pour suivre la progression d'upload */
 function xhrUpload(url, file, contentType, onProgress) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -320,8 +301,8 @@ function escapeHtml(str) {
 }
 
 function formatSize(bytes) {
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)}\u00a0Ko`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)}\u00a0Mo`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(0)} Ko`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} Mo`;
 }
 
 /* ================================================
