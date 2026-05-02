@@ -14,28 +14,51 @@
 <body>
 
   <!-- ===== Modal de bienvenue (bottom sheet sur mobile) ===== -->
-  <div class="modal-overlay" id="welcome-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" style="display:none;">
+  <div 
+    class="modal-overlay" 
+    id="welcome-modal" 
+    role="dialog" 
+    aria-modal="true" 
+    aria-labelledby="modal-title"
+    aria-describedby="modal-description"
+    hidden
+  >
     <div class="modal">
+      
       <div class="modal-deco" aria-hidden="true">💍</div>
-      <h2 class="modal-title" id="modal-title">Bienvenue !</h2>
-      <p class="modal-text">
-        Merci d'être là pour célébrer notre union&nbsp;! Partagez toutes les photos
-        que vous prenez pendant la soirée. Elles s'ajouteront à une galerie commune
-        que tous les invités pourront consulter. Bon shooting&nbsp;! 💕
-        <span class="modal-signature">— Marine &amp; Mael</span>
+
+      <header>
+        <h2 class="modal-title" id="modal-title">Bienvenue !</h2>
+      </header>
+
+      <p class="modal-text" id="modal-description">
+        Merci d'être là pour célébrer l'union de Marine &amp; Mael &nbsp;! On vous a créé cet espace pour partager toutes les photos
+        que vous prenez pendant la soirée. Elles s'ajouteront à une galerie commune que tous les invités pourront consulter. Bon shooting&nbsp;!
+        <span class="modal-signature"></span>
       </p>
-      <button class="btn btn-primary btn-full" onclick="closeWelcomeModal()" autofocus>
-        C'est parti&nbsp;!
-      </button>
+
+      <footer>
+        <button 
+          class="btn btn-primary btn-full" 
+          type="button"
+          onclick="closeWelcomeModal()" 
+          autofocus
+        >
+          C'est parti&nbsp;!
+        </button>
+      </footer>
+
     </div>
   </div>
 
   <!-- ===== En-tête ===== -->
-  <header class="site-header">
-    <h1 class="site-title">
-      Marine <span class="et">&amp;</span> Mael
-    </h1>
-    <p class="site-subtitle">Partagez vos plus beaux moments</p>
+  <header class="site-header" role="banner">
+    <div class="header-inner">
+      <h1 class="site-title">
+        Marine <span class="et">&amp;</span> Mael
+      </h1>
+      <p class="site-subtitle">Partagez vos plus beaux clichés</p>
+    </div>
   </header>
 
   <!-- ===== Contenu principal ===== -->
